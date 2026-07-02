@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .models import User
 from .serializer import UserSerializer
+from django.contrib.auth.hashers import check_password
 
 
 @api_view(['GET', 'POST'])
@@ -41,3 +42,19 @@ def user_detail(request, pk):
         user.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['POST'])
+def user_login(request):
+    if request.method == 'POST':
+        email = request.data.get('email')
+        password = request.data.get('password')
+        if not email or not password:
+            return Response({'message': 'Email e senha são obrigatórios.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'message': 'Email ou senha incorretos.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        if check_password(password, user.password):
+            return Response({'message': 'Login feito com sucesso!'}, status=status.HTTP_200_OK)
+        return Response({'message': 'Email ou senha incorretos.'}, status=status.HTTP_401_UNAUTHORIZED)
