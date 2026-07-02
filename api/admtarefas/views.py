@@ -1,10 +1,10 @@
+from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from .models import User
 from .serializer import UserSerializer
 from django.contrib.auth.hashers import check_password
-
 
 @api_view(['GET', 'POST'])
 def users_list(request):
@@ -45,16 +45,16 @@ def user_detail(request, pk):
 @api_view(['POST'])
 def user_login(request):
     if request.method == 'POST':
-        email = request.data.get('email')
+        identifier = request.data.get('identifier')
         password = request.data.get('password')
-        if not email or not password:
-            return Response({'message': 'Email e senha são obrigatórios.'}, status=status.HTTP_400_BAD_REQUEST)
+        if not identifier or not password:
+            return Response({'message': 'Nome/email e senha são obrigatórios.'}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            user = User.objects.get(email=email)
+            user = User.objects.get(Q(email=identifier) | Q(name=identifier))
         except User.DoesNotExist:
-            return Response({'message': 'Email ou senha incorretos.'}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'message': 'Nome, email ou senha incorretos.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         if check_password(password, user.password):
             return Response({'message': 'Login feito com sucesso!'}, status=status.HTTP_200_OK)
-        return Response({'message': 'Email ou senha incorretos.'}, status=status.HTTP_401_UNAUTHORIZED)
+        return Response({'message': 'Nome, email ou senha incorretos.'}, status=status.HTTP_401_UNAUTHORIZED)
