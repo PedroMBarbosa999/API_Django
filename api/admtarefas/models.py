@@ -10,3 +10,11 @@ class User(models.Model):
 
     def __str__(self):
         return self.email
+
+class Task(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField(blank=True, default='')
+    status = models.IntegerField(choices=[(0, 'Pending'), (1, 'In Progress'), (2, 'Completed')], default=0)
+    date_created = models.DateTimeField(auto_now_add=True)
+    date_finished = models.DateTimeField(null=True, blank=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
