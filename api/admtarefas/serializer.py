@@ -25,3 +25,8 @@ class UserSerializer(serializers.ModelSerializer):
                 hasher='pbkdf2_sha256'
             )
         return super().update(instance, validated_data)
+
+class TaskSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Task
+        fields = '__all__'
