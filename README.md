@@ -11,6 +11,7 @@ Paso a paso:
 7. preparação de arquivos auxiliares(serializer, urls e outros)
 8. criação dos endpoints simples (GET, POST, PUT e DELETE)
 9. criação de um endpoint que puxa a tarefa pelo user_id
+10. configuração do CORS (pedi pra IA configurar, tive que fazer uma mudança no views por conta do login)
 
 OBS: usei VS Code Stuido, ele vem com IA integrada que dá sugestões, mas não aceito as sugestões, a menos que seja algo que eu não saiba fazer, resolver ou para melhorias
 
@@ -19,3 +20,4 @@ Django
 Django RestFramework
 Django Serializer
 Django PKBDF2
+Django Simplejwt

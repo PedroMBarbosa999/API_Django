@@ -14,7 +14,7 @@ class User(models.Model):
 class Task(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True, default='')
-    status = models.IntegerField(choices=[(0, 'Pending'), (1, 'In Progress'), (2, 'Completed')], default=0)
+    status = models.IntegerField(choices=[(1, 'Pending'), (2, 'Completed')], default=1)
     date_created = models.DateTimeField(auto_now_add=True)
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name='tasks')
 

@@ -2,6 +2,7 @@ from django.db.models import Q
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
 from .models import Task, User
 from .serializer import UserSerializer
 from .serializer import TaskSerializer
@@ -46,7 +47,6 @@ def user_detail(request, pk):
 
 @api_view(['POST'])
 def user_login(request):
-
     if request.method == 'POST':
         identifier = request.data.get('identifier')
         password = request.data.get('password')
@@ -59,7 +59,19 @@ def user_login(request):
             return Response({'message': 'Nome, email ou senha incorretos.'}, status=status.HTTP_401_UNAUTHORIZED)
 
         if check_password(password, user.password):
-            return Response({'message': 'Login feito com sucesso!'}, status=status.HTTP_200_OK)
+            # Gera token JWT
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                'message': 'Login feito com sucesso!',
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'name': user.name,
+                },
+                'token': str(refresh.access_token),
+            }, status=status.HTTP_200_OK)
+            
         return Response({'message': 'Nome, email ou senha incorretos.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 #Parte das tasks
